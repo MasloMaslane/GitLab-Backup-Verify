@@ -1,4 +1,12 @@
-GITLAB_HOME=/Users/gitlab
+#!/bin/bash
+
+# GITLAB_HOME=/Users/gitlab # set this to your GitLab home directory
+
+if [ -z "$GITLAB_HOME" ]; then
+  echo "Please set GITLAB_HOME to your GitLab home directory"
+  exit 1
+fi
+
 BACKUP=`ls $GITLAB_HOME/backup | grep gitlab_backup`
 IFS='_' read -ra BACKUP_ARRAY <<< "$BACKUP"
 GITLAB_VERSION=${BACKUP_ARRAY[4]}

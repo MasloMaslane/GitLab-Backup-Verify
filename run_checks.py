@@ -80,8 +80,6 @@ if fail:
 	exit(1)
 print(ok("OK"))
 
-# glpat-VCgBqcXo97GCyy548T-_
-
 print("**** Other checks ****")
 
 print("Number of projects: ", end='')

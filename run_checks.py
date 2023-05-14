@@ -1,13 +1,15 @@
 import json
 import time
+import yaml
 import requests
 
 ACCESS_TOKEN = "mOD3VhRDOf3qtqvnVQkl"
+config = yaml.safe_load(open('config.yaml', 'r'))
+
 def multipage_request(url, err_msg):
 	res = []
 	page = 1
 	while True:
-		# print(page)
 		r = requests.get(f'{url}?private_token={ACCESS_TOKEN}&page={page}&per_page=100')
 		if r.status_code != 200:
 			print(error(err_msg))
@@ -84,14 +86,14 @@ print("**** Other checks ****")
 
 print("Number of projects: ", end='')
 projects = multipage_request('http://localhost/api/v4/projects', 'Gitlab /api/v4/projects check failed')
-if len(projects) <= 300:
+if len(projects) <= config["num_projects"]:
 	print(error("Too few projects, something is wrong"))
 	exit(1)
 print(ok(len(projects)))
 
 print("Number of users: ", end='')
 users = multipage_request('http://localhost/api/v4/users', 'Gitlab /api/v4/users check failed')
-if len(users) < 130:
+if len(users) <= config["num_users"]:
 	print(error("Too few users, something is wrong"))
 	exit(1)
 print(ok(len(users)))

@@ -16,6 +16,7 @@ GITLAB_VERSION=${BACKUP_ARRAY[4]}
 echo "GitLab version: $GITLAB_VERSION"
 
 cp *.tar $GITLAB_HOME/backup
+cp restore_backup.sh $GITLAB_HOME/backup
 
 sudo docker run --detach \
   --publish 443:443 --publish 80:80 --publish 22:22 \
@@ -28,7 +29,6 @@ sudo docker run --detach \
   --shm-size 256m \
   gitlab/gitlab-ce:$GITLAB_VERSION-ce.0
 
-cp restore_backup.sh $GITLAB_HOME/backup
 sudo docker exec -it gitlab /bin/bash -c "cd /tmp/backup && chmod +x restore_backup.sh && ./restore_backup.sh"
 if [ $? -ne 0 ]; then
   echo "Backup failed"

@@ -9,6 +9,7 @@ function fail {
 DOCKER_IP=`/sbin/ip route|awk '/default/ { print $3 }'`
 
 gitlab-ctl reconfigure
+
 cd /tmp/backup
 tar -xf gitlab_config_*.tar -C /tmp/backup
 cp etc/gitlab/gitlab-secrets.json /etc/gitlab/
@@ -19,9 +20,9 @@ chown git:git /var/opt/gitlab/backups/*_gitlab_backup.tar || fail "chown git:git
 gitlab-ctl stop puma || fail "gitlab-ctl stop puma" $?
 gitlab-ctl stop sidekiq || fail "gitlab-ctl stop sidekiq" $?
 GITLAB_ASSUME_YES=1 gitlab-backup restore || fail "gitlab-backup restore" $?
+
 gitlab-ctl reconfigure || fail "gitlab-ctl reconfigure 2." $?
 gitlab-ctl restart || fail "gitlab-ctl restart" $?
-su git -c RAILS_ENV=production bin/background_jobs start
 gitlab-rake gitlab:check SANITIZE=true || fail "gitlab-rake gitlab:check SANITIZE=true" $?
 echo "Backup restored successfully"
 

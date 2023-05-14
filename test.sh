@@ -7,6 +7,8 @@ if [ -z "$GITLAB_HOME" ]; then
   exit 1
 fi
 
+trap "{ echo 'Destroying GitLab instance...'; sudo docker destroy gitlab; exit 1; }" SIGINT SIGTERM EXIT
+
 BACKUP=`ls $GITLAB_HOME/backup | grep gitlab_backup`
 IFS='_' read -ra BACKUP_ARRAY <<< "$BACKUP"
 GITLAB_VERSION=${BACKUP_ARRAY[4]}

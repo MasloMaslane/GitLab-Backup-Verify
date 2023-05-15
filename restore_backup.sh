@@ -26,6 +26,8 @@ gitlab-ctl restart || fail "gitlab-ctl restart" $?
 gitlab-rake gitlab:check SANITIZE=true || fail "gitlab-rake gitlab:check SANITIZE=true" $?
 echo "Backup restored successfully"
 
-gitlab-rails runner "u = User.new(username: 'backup_test', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password'); u.skip_confirmation!; u.save!" || fail "create user" $?
+random_string=$(echo $RANDOM | base64 | head -c 20; echo)
+
+gitlab-rails runner "u = User.new(username: 'backup_test', email: 'test@example.com', name: 'Test User', password: '$random_string$random_string', password_confirmation: '$random_string$random_string'); u.skip_confirmation!; u.save!" || fail "create user" $?
 gitlab-rails runner "token = User.find_by_username('backup_test').personal_access_tokens.create(scopes: ['api', 'read_user', 'read_api', 'read_repository', 'write_repository', 'sudo'], name: 'Automation token'); token.set_token('mOD3VhRDOf3qtqvnVQkl'); token.save!" || fail "create access token" $?
 echo "Access token created successfully"
